@@ -1,6 +1,6 @@
 // sw.js — RFID Check-In service worker
 // Bump CACHE_NAME whenever you deploy updated files
-const CACHE_NAME = 'checkin-v3';
+const CACHE_NAME = 'checkin-v4';
 
 const PRECACHE = [
   './',

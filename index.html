@@ -1001,7 +1001,8 @@ document.addEventListener('click', e => {
     && !e.target.closest('input')
     && !e.target.closest('#search-input')
     && !e.target.closest('#iakb')
-    && !e.target.closest('#iakb-initials'))
+    && !e.target.closest('#iakb-initials')
+    && !e.target.closest('.attendee-row'))
     refocus();
 });
 refocus();
