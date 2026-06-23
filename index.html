@@ -1198,7 +1198,7 @@ function updateAttendeeList(filter) {
           </div>`
         : `<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;font-size:12px;color:var(--text-3);">No scans recorded yet</div>`;
     }
-    return `<div class="attendee-row ${s==='in'?'in-venue':'out-venue'}" onclick="openManualModal('${id}')">
+    return `<div class="attendee-row ${s==='in'?'in-venue':'out-venue'}" data-attendee-id="${id}">
       <span class="attendee-name">${name}</span>
       <span class="attendee-id">${id}</span>
       <span class="pill ${s}">${s==='in'?'In':'Out'}</span>
@@ -1209,6 +1209,14 @@ function updateAttendeeList(filter) {
 
 document.getElementById('search-input').addEventListener('input', e => updateAttendeeList(e.target.value));
 document.getElementById('search-input').addEventListener('focus', e => e.stopPropagation());
+
+// Delegated tap handler for attendee rows — survives DOM rebuilds
+document.getElementById('attendee-list').addEventListener('pointerdown', e => {
+  const row = e.target.closest('.attendee-row');
+  if (!row) return;
+  const id = row.dataset.attendeeId;
+  if (id) openManualModal(id);
+});
 
 // Tapping the scan zone clears search and returns focus to scanning
 document.getElementById('scan-zone').addEventListener('click', () => {
