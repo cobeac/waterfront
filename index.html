@@ -1067,18 +1067,24 @@ function initialsPress(k) {
 
 // Wire up name keyboard
 document.querySelectorAll('.kkey[data-k]').forEach(btn => {
-  btn.addEventListener('pointerdown', e => {
+  const handler = e => {
     e.preventDefault();
     kbdPress(btn.dataset.k);
-  });
+  };
+
+  btn.addEventListener('click', handler);
+  btn.addEventListener('touchend', handler);
 });
 
 // Wire up initials keyboard
 document.querySelectorAll('.kkey[data-ki]').forEach(btn => {
-  btn.addEventListener('pointerdown', e => {
+  const handler = e => {
     e.preventDefault();
     initialsPress(btn.dataset.ki);
-  });
+  };
+
+  btn.addEventListener('click', handler);
+  btn.addEventListener('touchend', handler);
 });
 
 function resolveNameModal(useInput) {
@@ -1211,12 +1217,19 @@ document.getElementById('search-input').addEventListener('input', e => updateAtt
 document.getElementById('search-input').addEventListener('focus', e => e.stopPropagation());
 
 // Delegated tap handler for attendee rows — survives DOM rebuilds
-document.getElementById('attendee-list').addEventListener('pointerdown', e => {
+function handleAttendeeTap(e) {
   const row = e.target.closest('.attendee-row');
   if (!row) return;
+
+  e.preventDefault();
+
   const id = row.dataset.attendeeId;
   if (id) openManualModal(id);
-});
+}
+
+const attendeeList = document.getElementById('attendee-list');
+attendeeList.addEventListener('click', handleAttendeeTap);
+attendeeList.addEventListener('touchend', handleAttendeeTap);
 
 // Tapping the scan zone clears search and returns focus to scanning
 document.getElementById('scan-zone').addEventListener('click', () => {
@@ -1235,9 +1248,9 @@ function openManualModal(id) {
   const currentS = currentStatus[id] || 'out';
   const nextAction = currentS === 'out' ? 'in' : 'out';
   _manualId = id;
-  document.getElementById('manual-step-confirm').style.display = '';
-  document.getElementById('manual-step-initials').style.display = 'none';
-  document.getElementById('manual-initials-input').value = '';
+  document.getElementById('manual-step-confirm').style.display = 'none';
+  document.getElementById('manual-step-initials').style.display = '';
+  initialsUpdate('');
 
   const iconEl = document.getElementById('manual-modal-icon');
   iconEl.textContent = nextAction === 'in' ? '✓' : '↩';
@@ -1249,8 +1262,6 @@ function openManualModal(id) {
   document.getElementById('manual-modal-overlay').classList.add('open');
 }
 function manualStepInitials() {
-  document.getElementById('manual-step-confirm').style.display = 'none';
-  document.getElementById('manual-step-initials').style.display = '';
   initialsUpdate('');
 }
 function commitManualCheckin() {
